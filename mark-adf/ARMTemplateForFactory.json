@@ -1,0 +1,292 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mark-adf"
+		},
+		"adf_link_to_markserver1991_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'adf_link_to_markserver1991'"
+		},
+		"adf_link_to_markstorage1991_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adf_link_to_markstorage1991'"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "mark-server-1991.database.windows.net"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "clientsdb"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "markserver"
+		},
+		"adf_link_to_markstorage1991_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://markstorage1991.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/csv_sql_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy_from_csv_sql",
+						"description": "transfer data from CSV to SQL",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"id"
+									]
+								},
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "id",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "email",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "clientsCSVDataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "clientsTABLE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/clientsCSVDataset')]",
+				"[concat(variables('factoryId'), '/datasets/clientsTABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/clientsCSVDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adf_link_to_markstorage1991",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "client_data.csv",
+						"fileSystem": "clients"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "String"
+					},
+					{
+						"name": "first_name",
+						"type": "String"
+					},
+					{
+						"name": "last_name",
+						"type": "String"
+					},
+					{
+						"name": "email",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adf_link_to_markstorage1991')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/clientsTABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adf_link_to_markserver1991",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "first_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "email",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Clients"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adf_link_to_markserver1991')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_link_to_markserver1991')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('adf_link_to_markserver1991_properties_typeProperties_server')]",
+					"database": "[parameters('adf_link_to_markserver1991_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('adf_link_to_markserver1991_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('adf_link_to_markserver1991_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_link_to_markstorage1991')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('adf_link_to_markstorage1991_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('adf_link_to_markstorage1991_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

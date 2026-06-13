@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mark-adf"
+		},
+		"adf_link_to_markserver1991_password": {
+			"value": ""
+		},
+		"adf_link_to_markstorage1991_accountKey": {
+			"value": ""
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_server": {
+			"value": "mark-server-1991.database.windows.net"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_database": {
+			"value": "clientsdb"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_userName": {
+			"value": "markserver"
+		},
+		"adf_link_to_markstorage1991_properties_typeProperties_url": {
+			"value": "https://markstorage1991.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

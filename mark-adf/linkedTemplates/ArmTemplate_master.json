@@ -1,0 +1,84 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mark-adf"
+		},
+		"adf_link_to_markserver1991_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'adf_link_to_markserver1991'"
+		},
+		"adf_link_to_markstorage1991_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adf_link_to_markstorage1991'"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "mark-server-1991.database.windows.net"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "clientsdb"
+		},
+		"adf_link_to_markserver1991_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "markserver"
+		},
+		"adf_link_to_markstorage1991_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://markstorage1991.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "mark-adf_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"adf_link_to_markserver1991_password": {
+						"value": "[parameters('adf_link_to_markserver1991_password')]"
+					},
+					"adf_link_to_markstorage1991_accountKey": {
+						"value": "[parameters('adf_link_to_markstorage1991_accountKey')]"
+					},
+					"adf_link_to_markserver1991_properties_typeProperties_server": {
+						"value": "[parameters('adf_link_to_markserver1991_properties_typeProperties_server')]"
+					},
+					"adf_link_to_markserver1991_properties_typeProperties_database": {
+						"value": "[parameters('adf_link_to_markserver1991_properties_typeProperties_database')]"
+					},
+					"adf_link_to_markserver1991_properties_typeProperties_userName": {
+						"value": "[parameters('adf_link_to_markserver1991_properties_typeProperties_userName')]"
+					},
+					"adf_link_to_markstorage1991_properties_typeProperties_url": {
+						"value": "[parameters('adf_link_to_markstorage1991_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

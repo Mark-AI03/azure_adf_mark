@@ -1,0 +1,17 @@
+{
+	"name": "adf_link_to_markserver1991",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "mark-server-1991.database.windows.net",
+			"database": "clientsdb",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "markserver",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEJGQkJFOUQxLTNGODQtNDIwNy04QjlDLTU0QUU0QTE1NTlEOV85N2NlNmJkYy01ZTdiLTQwZTYtODFlZC02ZGQ0NWQwNTA2YjciDQp9"
+		}
+	}
+}

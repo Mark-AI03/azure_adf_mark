@@ -1,0 +1,15 @@
+{
+	"name": "mark-adf",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "francecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "76db1d6c-c0ce-434b-8434-a0f36d28de94",
+		"tenantId": "1b8109bc-d2c9-4401-bfea-88a9100594ed"
+	}
+}

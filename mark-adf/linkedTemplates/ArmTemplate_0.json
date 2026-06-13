@@ -295,7 +295,7 @@
 			"properties": {
 				"description": "triggers every minutes.",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -309,8 +309,9 @@
 				"typeProperties": {
 					"recurrence": {
 						"frequency": "Minute",
-						"interval": 2,
-						"startTime": "2026-06-13T15:15:00",
+						"interval": 1,
+						"startTime": "2026-06-13T15:19:00",
+						"endTime": "2026-06-14T15:22:05",
 						"timeZone": "Romance Standard Time"
 					}
 				}

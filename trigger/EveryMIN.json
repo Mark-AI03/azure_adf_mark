@@ -1,0 +1,25 @@
+{
+	"name": "EveryMIN",
+	"properties": {
+		"description": "triggers every minutes.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "csv_sql_pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 2,
+				"startTime": "2026-06-13T15:15:00",
+				"timeZone": "Romance Standard Time"
+			}
+		}
+	}
+}
